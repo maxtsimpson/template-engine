@@ -10,6 +10,11 @@ class Engineer extends Employee{
     getGithub(){
         return this.github;
     }
+    setGithub(){
+        if(this.isValidType("github",github,"string")){
+            this.github = github;
+        }
+    }
 }
 
 module.exports = Engineer;

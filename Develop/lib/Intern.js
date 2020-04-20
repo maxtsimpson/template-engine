@@ -10,6 +10,11 @@ class Intern extends Employee{
     getSchool(){
         return this.school;
     }
+    setSchool(){
+        if(this.isValidType("school",school,"number")){
+            this.school = school;
+        }
+    }
 }
 
 module.exports = Intern;

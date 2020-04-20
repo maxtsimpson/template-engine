@@ -10,6 +10,11 @@ class Manager extends Employee{
     getOfficeNumber(){
         return this.officeNumber;
     }
+    setOfficeNumber(){
+        if(this.isValidType("officNumber",officNumber,"number")){
+            this.officNumber = officNumber;
+        }
+    }
 }
 
 module.exports = Manager;
