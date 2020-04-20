@@ -8,17 +8,9 @@ class Engineer extends Employee{
         }
         this.role = "engineer";
     }
-    isValidType(propertyName,input,type){
-        super(propertyName,input,type);
-    }
-
-    getGitHub(){
+    getGithub(){
         return this.github;
-    }
-
-    getRole(){
-        super();
     }
 }
 
-export default Engineer;
+module.exports = Engineer;
