@@ -6,7 +6,6 @@ class Engineer extends Employee{
         if (this.isValidType("github",github,"string")) {
             this.github = github;
         }
-        this.role = "engineer";
     }
     getGithub(){
         return this.github;
