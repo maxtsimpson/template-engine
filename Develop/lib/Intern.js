@@ -11,7 +11,7 @@ class Intern extends Employee{
         return this.school;
     }
     setSchool(){
-        if(this.isValidType("school",school,"number")){
+        if(this.isValidType("school",school,"string")){
             this.school = school;
         }
     }
