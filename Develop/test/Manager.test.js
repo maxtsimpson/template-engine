@@ -18,3 +18,10 @@ test("Can get office number via getOffice()", () => {
   const e = new Manager("Foo", 1, "test@test.com", testValue);
   expect(e.getOfficeNumber()).toBe(testValue);
 });
+
+test("Can set officeNumber via setOfficeNumber method", () => {
+  const e = new Manager("Foo", 1, "test@test.com", 150);
+  const officeNumber = 200;
+  e.setOfficeNumber(officeNumber);
+  expect(e.officeNumber).toBe(officeNumber);
+});

@@ -17,3 +17,10 @@ test("Can get school via getSchool()", () => {
   const e = new Intern("Foo", 1, "test@test.com", testValue);
   expect(e.getSchool()).toBe(testValue);
 });
+
+test("Can set school via setSchool method", () => {
+  const e = new Intern("Foo", 1, "test@test.com", "UCLA");
+  const school = "UWA";
+  e.setSchool(school);
+  expect(e.school).toBe(school);
+});
