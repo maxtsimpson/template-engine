@@ -10,7 +10,7 @@ class Engineer extends Employee{
     getGithub(){
         return this.github;
     }
-    setGithub(){
+    setGithub(github){
         if(this.isValidType("github",github,"string")){
             this.github = github;
         }

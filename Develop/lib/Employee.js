@@ -24,7 +24,7 @@ class Employee {
         return this.name;
     }
 
-    setName(){
+    setName(name){
         if(this.isValidType("name",name,"string")){
             this.name = name;
         }
@@ -38,7 +38,7 @@ class Employee {
         return this.email;
     }
 
-    setEmail(){
+    setEmail(email){
         if(this.isValidType("email",email,"string")){
             this.email = email;
         }

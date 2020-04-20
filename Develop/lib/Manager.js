@@ -10,9 +10,9 @@ class Manager extends Employee{
     getOfficeNumber(){
         return this.officeNumber;
     }
-    setOfficeNumber(){
-        if(this.isValidType("officNumber",officNumber,"number")){
-            this.officNumber = officNumber;
+    setOfficeNumber(officeNumber){
+        if(this.isValidType("officeNumber",officeNumber,"number")){
+            this.officeNumber = officeNumber;
         }
     }
 }
