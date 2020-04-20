@@ -1,36 +1,53 @@
 // TODO: Write code to define and export the Employee class
 class Employee {
     constructor (name,id,email) {
-        
-        this.name = name;
+        if(this.isValidType("name",name,"string")){
+            this.name = name;
+        }
         //would be good if this was unique and auto-generated
-        this.id = id;
-        this.email = email;
-    }
-
-    //validate each property
-    isValidId(id) {
-        if(typeof(id) !== "number"){
-            throw "The employee name should be a number";
+        if(this.isValidType("id",id,"number")){
+            this.id = id;
+        }
+        if(this.isValidType("email",email,"string")){
+            this.email = email;
         }
     }
 
     isValidType(propertyName,input,type){
         if(typeof(input) !== type){
-            throw `the ${propertyName} should be a ${type}`
+            throw `the ${propertyName} should be a ${type}`;
         }
         return true;
     }
 
-    isValidName(name) {
-        if(typeof(name) !== "string"){
-            throw "The employee name should be a string";
+    getName(){
+        return this.name;
+    }
+
+    setName(){
+        if(this.isValidType("name",name,"string")){
+            this.name = name;
         }
     }
 
-    isValidName(name) {
-        if(typeof(name) !== "string"){
-            throw "The employee name should be a string";
+    getId(){
+        return this.id;
+    }
+
+    getEmail(){
+        return this.email;
+    }
+
+    setEmail(){
+        if(this.isValidType("email",email,"string")){
+            this.email = email;
         }
     }
+
+    getRole(){
+        return this.constructor.name;
+    }
+
 }
+
+module.exports = Employee;
