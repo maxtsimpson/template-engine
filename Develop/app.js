@@ -1,7 +1,8 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const banner = require("../banner")
+const banner = require("./banner")
+const menuObject = require("../Develop/menuObject.js")
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -19,7 +20,6 @@ const writeToFile = function (fileName, data) {
     });
 }
 
-
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 let main = function () {
@@ -29,28 +29,55 @@ let main = function () {
     const prompts = new Rx.Subject();
     let i = 0;
 
-    let makePrompt = function (message) {
+    let makePrompt = function (msg,menuName) {
         return {
             type: 'input',
-            name: `userInput-${i}`,
-            message: `${message || 'Say something to start chatting!'}\n`,
+            name: `${menuName}-${i}`,
+            message: `${msg}\n`,
         };
     }
 
     inquirer.prompt(prompts).ui.process.subscribe(answer => {
+        console.log({answer});
+        
+
         if (answer.answer.toLowerCase() === "exit") {
             prompts.complete();
         } else {
-            console.log(answer);
             i++;
-            prompts.next(makePrompt(`This is prompt #${i}.`));
+            switch (answer.name.split("-")[0]) {
+                case "mainMenu":
+                        switch (answer.name.split("-")[1]) {
+                            case "1":
+                                    addEmployee();
+                                break;
+                            case "2":
+                                    listCurrentEmployees();
+                                break;
+                            case "3":
+                                    renderToHtml();
+                                break;
+                            default:
+                                    invalidOption();
+                                break;
+                        }
+                    break;
+            
+                case "employeeList":
+                        editEmployee();
+    
+                default:
+                        invalidOption();
+                    break;
+            }
+            // prompts.next(makePrompt(menuObject.mainMenu,"mainMenu"));
         }
     },
         error => { throw new Error("an error has occured. please start the program again") },
         complete => console.log("questions complete")
     );
-
-    prompts.next(makePrompt());
+    
+    prompts.next(makePrompt(menuObject.mainMenu,"mainMenu"));
 
     // After the user has input all employees desired, call the `render` function (required
     // above) and pass in an array containing all employee objects; the `render` function will
