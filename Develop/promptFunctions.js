@@ -1,19 +1,41 @@
-let invalidOption = function(){
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 
-};
+let promptFunctions = {
 
-let addEmployee = function(){
+    invalidOption: function () {
     
-};
+    },
 
-let editEmployee = function(){
-    
-};
+    addEmployee: function(answer) {
+        console.log("in addEmployee");
+        makePrompt("","addEmployee")
 
-let listCurrentEmployees = function(){
-    
-};
+        i++;
+        // let employee = new Employee()
 
-let invalidOption = function(){
-    
-};
+        // properties.forEach(prop => {
+        //     prompts.next(makePrompt(`employee ${prop}:`))
+        // });
+    },
+
+    // let addEmployeeHandler = answer => {
+
+    // },
+
+    editEmployee: function () {
+
+    },
+
+    listCurrentEmployees: function () {
+
+    },
+
+    invalidOption: function () {
+
+    }
+
+}
+
+module.exports = promptFunctions;

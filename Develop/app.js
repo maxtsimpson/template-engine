@@ -1,6 +1,7 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const promptFunctions = require("./promptFunctions");
 const banner = require("./banner")
 const menuObject = require("../Develop/menuObject.js")
 const inquirer = require("inquirer");
@@ -29,55 +30,60 @@ let main = function () {
     const prompts = new Rx.Subject();
     let i = 0;
 
-    let makePrompt = function (msg,menuName) {
+    let makePrompt = function (msg, menuName) {
         return {
             type: 'input',
             name: `${menuName}-${i}`,
-            message: `${msg}\n`,
+            message: `${msg}\n`
         };
     }
 
-    inquirer.prompt(prompts).ui.process.subscribe(answer => {
-        console.log({answer});
-        
+    let errorCallback = error => { throw new Error("an error has occured. please start the program again") };
+    let completeCallback = complete => { console.log("questions complete") }
 
+    let mainMenuHandler = answer => {
+        console.log({ answer });
         if (answer.answer.toLowerCase() === "exit") {
             prompts.complete();
         } else {
             i++;
             switch (answer.name.split("-")[0]) {
                 case "mainMenu":
-                        switch (answer.name.split("-")[1]) {
-                            case "1":
-                                    addEmployee();
-                                break;
-                            case "2":
-                                    listCurrentEmployees();
-                                break;
-                            case "3":
-                                    renderToHtml();
-                                break;
-                            default:
-                                    invalidOption();
-                                break;
-                        }
+                    console.log("is the main menu prompt")
+                    switch (answer.answer) {
+                        case "1":
+                            console.log(promptFunctions.addEmployee);
+                            inquirer.prompt(prompts).ui.process.subscribe(promptFunctions.addEmployee, errorCallback,completeCallback)
+                            prompt.next(makePrompt("please enter a value for each field and press enter","addEmployee"));
+                            // inquirer.prompt(prompts).ui.process.unsubscribe()
+                            break;
+                        case "2":
+                            listCurrentEmployees();
+                            break;
+                        case "3":
+                            renderToHtml();
+                            break;
+                        default:
+                            invalidOption();
+                            break;
+                    }
                     break;
-            
+
                 case "employeeList":
-                        editEmployee();
-    
+                    editEmployee();
+
                 default:
-                        invalidOption();
+                    invalidOption();
                     break;
             }
             // prompts.next(makePrompt(menuObject.mainMenu,"mainMenu"));
         }
-    },
-        error => { throw new Error("an error has occured. please start the program again") },
-        complete => console.log("questions complete")
-    );
-    
-    prompts.next(makePrompt(menuObject.mainMenu,"mainMenu"));
+    }
+
+    inquirer.prompt(prompts).ui.process.subscribe(mainMenuHandler, errorCallback,completeCallback);
+    // inquirer.prompt(prompts).ui.process.subscribe(addEmployee, errorCallback,completeCallback);
+
+    prompts.next(makePrompt(menuObject.mainMenu.msg, "mainMenu"));
 
     // After the user has input all employees desired, call the `render` function (required
     // above) and pass in an array containing all employee objects; the `render` function will
