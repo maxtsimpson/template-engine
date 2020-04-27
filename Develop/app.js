@@ -31,6 +31,7 @@ let main = function () {
     let i = 0;
 
     let makePrompt = function (msg, menuName) {
+        console.log("in makePrompt")
         return {
             type: 'input',
             name: `${menuName}-${i}`,
@@ -52,9 +53,9 @@ let main = function () {
                     console.log("is the main menu prompt")
                     switch (answer.answer) {
                         case "1":
-                            console.log(promptFunctions.addEmployee);
                             inquirer.prompt(prompts).ui.process.subscribe(promptFunctions.addEmployee, errorCallback,completeCallback)
-                            prompt.next(makePrompt("please enter a value for each field and press enter","addEmployee"));
+                            prompts.next(makePrompt("please select type in an employee type and press enter","addEmployeeInitial"));
+                            // console.log("added next prompt")
                             // inquirer.prompt(prompts).ui.process.unsubscribe()
                             break;
                         case "2":
