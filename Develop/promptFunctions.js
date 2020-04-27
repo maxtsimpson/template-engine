@@ -1,77 +1,115 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const { v1: uuidv1 } = require('uuid');
 
 let promptFunctions = {
 
+    propertiesList: [],
+    employeeType: "",
+
+    employeeTypesPrompt: `
+        Select from the following types of employees
+
+        "1. Engineer"
+        "2. Intern"
+        "3. Manager"
+
+        ${mainMenuOrExit}
+    `,
+
+    makePrompt: function (msg, menuName) {
+        console.log("in makePrompt")
+        let prompt = {
+            type: 'input',
+            name: `${menuName}-${uuidv1()}`,
+            message: `${msg}\n`
+        };
+        return prompt;
+    },
+
     invalidOption: function () {
-    
+
     },
 
     getPropsForEmployee: function (employee) {
         return Object.keys(employee).filter(prop => ((typeof prop) !== "function"));
     },
 
-    createNewEmployee: function (employeeType) {
+    getPropsForEmployeeType: function (employeeType) {
+        employeeProps = ["name", "id", "email"]; //tried to do this dynamically but cant figure it out
         switch (employeeType) {
             case "Manager":
-                return new Manager();
+                employeeProps.push("officeNumber");
+                return employeeProps;
                 break;
-        
+
             case "Engineer":
-                    return new Engineer();
+                employeeProps.push("github");
+                return employeeProps;
                 break;
 
             case "Intern":
-                    return new Intern();
+                employeeProps.push("school");
+                return employeeProps;
                 break;
             default:
                 break;
         }
     },
 
-    addEmployee: function(answer) {
-        console.log("in addEmployee");
+    addEmployee: function (answer,prompts) {
+        console.log("in add Employee menu");
 
         switch (answer.name.split("-")[0]) {
             case "addEmployeeInitial":
-                    i = 0;
-                    let employeeType = answer.answer;
-                    let employee = promptFunctions.createNewEmployee(employeeType)
-                    propertiesToSet = promptFunctions.getPropsForEmployee(employee);
+                promptFunctions.propertiesList = [];
+                addEmployeeIndex = 0;
+                console.log("in employee initial");
+                promptFunctions.employeeType = answer.answer;
+                propertiesToSet = promptFunctions.getPropsForEmployeeType(employeeType);
+                let prompt = promptFunctions.makePrompt(`please enter ${propertiesToSet[addEmployeeIndex]}`, "addEmployee")
+                prompts.next(prompt);
+                addEmployeeIndex++;
                 break;
-        
+
             case "addEmployee":
-                    propertiesList += answer.answer
-                    if(i < propertiesToSet.length){
-                        makePrompt(`please enter ${propertiesToSet[i]}`,"addEmployee")
-                    }
-                    else{
-                        //
-                        console.log("about to create employee")
-                        employee = new employeeType(propertiesList.split(","));
-                        console.log("created employee")
-                    }
-                    i++;
+                promptFunctions.propertiesList.push(answer.answer);
+                if (addEmployeeIndex < propertiesToSet.length) {
+                    let prompt = promptFunctions.makePrompt(`please enter ${propertiesToSet[addEmployeeIndex]}`, "addEmployee")
+                    prompts.next(prompt);
+                }
+                else {
+                    promptFunctions.createEmployee()
+                }
+                addEmployeeIndex++;
                 break;
             default:
                 break;
         }
-        // let employee = new []
 
-        // makePrompt("","addEmployee")
-
-        // i++;
-        // let employee = new Employee()
-
-        // properties.forEach(prop => {
-        //     prompts.next(makePrompt(`employee ${prop}:`))
-        // });
     },
 
-    // let addEmployeeHandler = answer => {
-
-    // },
+    createEmployee: function() {
+        switch (promptFunctions.employeeType) {
+            case "Manager":
+                    const employee = new Manager(promptFunctions.propertiesList[0],promptFunctions.propertiesList[1],promptFunctions.propertiesList[2],promptFunctions.propertiesList[3],promptFunctions.propertiesList[4])
+                    employeeRepo.storeEmployee(employee);
+                break;
+            case "Engineer":
+                    const employee = new Engineer(promptFunctions.propertiesList[0],promptFunctions.propertiesList[1],promptFunctions.propertiesList[2],promptFunctions.propertiesList[3],promptFunctions.propertiesList[4])
+                    employeeRepo.storeEmployee(employee);
+                break;
+            case "Intern":
+                    const employee = new Intern(promptFunctions.propertiesList[0],promptFunctions.propertiesList[1],promptFunctions.propertiesList[2],promptFunctions.propertiesList[3],promptFunctions.propertiesList[4])
+                    employeeRepo.storeEmployee(employee);
+                break;
+                
+            default:
+                break;
+        }
+        console.log("employee created");
+    },
 
     editEmployee: function () {
 

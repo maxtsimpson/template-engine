@@ -8,11 +8,15 @@ const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
 const Rx = require("rxjs");
+const { v1: uuidv1 } = require('uuid');
 
 const OUTPUT_DIR = path.resolve(__dirname, "output")
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
+const prompts = new Rx.Subject();
+
 const render = require("./lib/htmlRenderer");
+let propertiesToSet = [];
 
 const writeToFile = function (fileName, data) {
     fs.writeFile(fileName, data, (err) => {
@@ -26,35 +30,37 @@ const writeToFile = function (fileName, data) {
 let main = function () {
 
     console.log(banner)
+    console.log({prompts})
 
-    const prompts = new Rx.Subject();
-    let i = 0;
+    // let promptIndex = 0;
 
-    let makePrompt = function (msg, menuName) {
-        console.log("in makePrompt")
-        return {
-            type: 'input',
-            name: `${menuName}-${i}`,
-            message: `${msg}\n`
-        };
-    }
+    // let makePrompt = function (msg, menuName) {
+    //     console.log("in makePrompt")
+    //     return {
+    //         type: 'input',
+    //         name: `${menuName}-${promptIndex}`,
+    //         message: `${msg}\n`
+    //     };
+    // }
 
-    let errorCallback = error => { throw new Error("an error has occured. please start the program again") };
+    let errorCallback = error => { throw "an error has occured. please start the program again" };
     let completeCallback = complete => { console.log("questions complete") }
 
     let mainMenuHandler = answer => {
         console.log({ answer });
+        // console.log(answer.name.split("-")[0])
         if (answer.answer.toLowerCase() === "exit") {
             prompts.complete();
         } else {
-            i++;
             switch (answer.name.split("-")[0]) {
                 case "mainMenu":
                     console.log("is the main menu prompt")
                     switch (answer.answer) {
                         case "1":
-                            inquirer.prompt(prompts).ui.process.subscribe(promptFunctions.addEmployee, errorCallback,completeCallback)
-                            prompts.next(makePrompt("please select type in an employee type and press enter","addEmployeeInitial"));
+                            console.log({prompts})
+                            // inquirer.prompt(prompts).ui.process.subscribe(promptFunctions.addEmployee, errorCallback,completeCallback)
+                            promptFunctions.addEmployee(answer);
+                            prompts.next(promptFunctions.makePrompt("please type in an employee type and press enter","addEmployeeInitial"));
                             // console.log("added next prompt")
                             // inquirer.prompt(prompts).ui.process.unsubscribe()
                             break;
@@ -73,6 +79,13 @@ let main = function () {
                 case "employeeList":
                     editEmployee();
 
+                    break;
+                case "addEmployeeInitial":
+                    promptFunctions.addEmployee(answer,prompts);
+                    break;
+                case "addEmployee":
+                    promptFunctions.addEmployee(answer,prompts);
+                    break;
                 default:
                     invalidOption();
                     break;
@@ -81,10 +94,11 @@ let main = function () {
         }
     }
 
+
     inquirer.prompt(prompts).ui.process.subscribe(mainMenuHandler, errorCallback,completeCallback);
     // inquirer.prompt(prompts).ui.process.subscribe(addEmployee, errorCallback,completeCallback);
 
-    prompts.next(makePrompt(menuObject.mainMenu.msg, "mainMenu"));
+    prompts.next(promptFunctions.makePrompt(menuObject.mainMenu.msg, "mainMenu"));
 
     // After the user has input all employees desired, call the `render` function (required
     // above) and pass in an array containing all employee objects; the `render` function will
@@ -110,5 +124,6 @@ let main = function () {
     // object with the correct structure and methods. This structure will be crucial in order
     // for the provided `render` function to work!```
 }
+
 
 main();
