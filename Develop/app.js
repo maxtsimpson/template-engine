@@ -1,12 +1,12 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const promptFunctions = require("./promptFunctions");
+const promptFunctions = require("./lib/promptFunctions");
 const banner = require("./banner")
-const menuObject = require("../Develop/menuObject.js")
+const menuObject = require("./lib/menuObject.js")
 const inquirer = require("inquirer");
 const path = require("path");
-const fs = require("fs");
+
 const Rx = require("rxjs");
 const { v1: uuidv1 } = require('uuid');
 
@@ -18,12 +18,7 @@ const prompts = new Rx.Subject();
 const render = require("./lib/htmlRenderer");
 let propertiesToSet = [];
 
-const writeToFile = function (fileName, data) {
-    fs.writeFile(fileName, data, (err) => {
-        if (err) throw err;
-        console.log('The html file has been generated!');
-    });
-}
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
