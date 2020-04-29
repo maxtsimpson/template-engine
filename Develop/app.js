@@ -27,8 +27,11 @@ let main = function () {
     const prompts = new Rx.Subject();
     console.log(banner)
 
+    // const mainMenu = (promptClass.makePrompt(menuObject.mainMenu.msg,"mainMenu"))
+
     let repo = new employeeRepo();
-    let promptClass = new promptFunctions(repo,prompts);
+    let promptClass = new promptFunctions(repo, prompts);
+
     // promptClass.employeeRepo = repo;
 
     let errorCallback = error => { throw "an error has occured. please start the program again" };
@@ -38,33 +41,42 @@ let main = function () {
         let context = (answer.name.split("-")[0])
         if (answer.answer.toLowerCase() === "exit") {
             prompts.complete();
+            return;
+        }
+
+        if (answer.answer.toLowerCase() === "x") {
+            prompts.next(promptClass.mainMenuPrompt);
         } else {
             switch (context) {
                 case "mainMenu":
                     switch (answer.answer) {
                         case "1":
                             promptClass.addEmployee(answer);
-                            prompts.next(promptClass.makePrompt("please type in an employee type and press enter","addEmployeeInitial"));
+                            prompts.next(promptClass.makePrompt("please type in an employee type and press enter", "addEmployeeInitial"));
                             break;
                         case "2":
                             promptClass.listCurrentEmployees();
-                            let prompt = (promptClass.makePrompt(menuObject.mainMenu.msg,"mainMenu"))
-                            prompts.next(prompt);
+                            prompts.next(promptClass.makePrompt(menuObject.employeeList,"editEmployeeInitial"));
                             break;
                         case "3":
                             renderToHtml(repo);
+                            prompts.next(promptClass.mainMenuPrompt);
                             break;
                         default:
                             promptClass.invalidOption();
                             break;
                     }
                     break;
+                case "editEmployeeInitial":
                 case "editEmployee":
-                    promptClass.editEmployee();
+                    // console.log("first editEmployee")
+                    promptClass.editEmployee(answer);
+                    // prompts.next(promptClass.mainMenuPrompt);
                     break;
                 case "addEmployeeInitial":
                 case "addEmployee":
                     promptClass.addEmployee(answer);
+                    prompts.next(promptClass.mainMenuPrompt);
                     break;
                 default:
                     promptClass.invalidOption();
@@ -74,7 +86,7 @@ let main = function () {
     }
 
 
-    inquirer.prompt(prompts).ui.process.subscribe(mainMenuHandler, errorCallback,completeCallback);
+    inquirer.prompt(prompts).ui.process.subscribe(mainMenuHandler, errorCallback, completeCallback);
     // inquirer.prompt(prompts).ui.process.subscribe(addEmployee, errorCallback,completeCallback);
 
     prompts.next(promptClass.makePrompt(menuObject.mainMenu.msg, "mainMenu"));
@@ -105,10 +117,14 @@ let main = function () {
 }
 
 const renderToHtml = function (repo) {
-    console.log("attempting to render")
+    console.log("in renderToHtml");
     renderedHTML = render(repo.getEmployees());
-    console.log({renderedHTML})
     io.writeToFile("./output.html", renderedHTML);
+    console.log(`
+    ========================================
+        content rendered to output.html
+    ========================================
+    `)
 }
 
 
