@@ -1,0 +1,37 @@
+[
+  {
+    "name": "dove",
+    "id": 9,
+    "email": "turtle@pond",
+    "type": "Engineer",
+    "github": "UCLA"
+  },
+  {
+    "name": "Dave",
+    "id": 10,
+    "email": "Dave@myHouse",
+    "type": "Manager",
+    "officeNumber": 5
+  },
+  {
+    "name": "Richie Mccaw",
+    "id": 11,
+    "email": "rich@poor",
+    "type": "Engineer",
+    "github": "plop"
+  },
+  {
+    "name": "benny",
+    "id": 0,
+    "email": "benny@boss",
+    "type": "Engineer",
+    "github": "flop"
+  },
+  {
+    "name": "mr ray",
+    "id": 0,
+    "email": "rayban",
+    "type": "Engineer",
+    "github": "isa"
+  }
+]

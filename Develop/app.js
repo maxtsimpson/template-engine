@@ -18,8 +18,6 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 let propertiesToSet = [];
 
-
-
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 let main = function () {
@@ -27,15 +25,11 @@ let main = function () {
     const prompts = new Rx.Subject();
     console.log(banner)
 
-    // const mainMenu = (promptClass.makePrompt(menuObject.mainMenu.msg,"mainMenu"))
-
     let repo = new employeeRepo();
     let promptClass = new promptFunctions(repo, prompts);
 
-    // promptClass.employeeRepo = repo;
-
     let errorCallback = error => { throw "an error has occured. please start the program again" };
-    let completeCallback = complete => { console.log("questions complete") }
+    let completeCallback = complete => { }; //left this here for future if you want to use it
 
     let mainMenuHandler = answer => {
         let context = (answer.name.split("-")[0])
@@ -43,7 +37,6 @@ let main = function () {
             prompts.complete();
             return;
         }
-
         if (answer.answer.toLowerCase() === "x") {
             prompts.next(promptClass.mainMenuPrompt);
         } else {
@@ -69,17 +62,14 @@ let main = function () {
                     break;
                 case "editEmployeeInitial":
                 case "editEmployee":
-                    // console.log("first editEmployee")
                     promptClass.editEmployee(answer);
-                    // prompts.next(promptClass.mainMenuPrompt);
                     break;
                 case "addEmployeeInitial":
                 case "addEmployee":
                     promptClass.addEmployee(answer);
-                    prompts.next(promptClass.mainMenuPrompt);
                     break;
                 default:
-                    promptClass.invalidOption();
+                    // promptClass.invalidOption();
                     break;
             }
         }
@@ -87,7 +77,6 @@ let main = function () {
 
 
     inquirer.prompt(prompts).ui.process.subscribe(mainMenuHandler, errorCallback, completeCallback);
-    // inquirer.prompt(prompts).ui.process.subscribe(addEmployee, errorCallback,completeCallback);
 
     prompts.next(promptClass.makePrompt(menuObject.mainMenu.msg, "mainMenu"));
 
@@ -117,7 +106,6 @@ let main = function () {
 }
 
 const renderToHtml = function (repo) {
-    console.log("in renderToHtml");
     renderedHTML = render(repo.getEmployees());
     io.writeToFile("./output.html", renderedHTML);
     console.log(`
