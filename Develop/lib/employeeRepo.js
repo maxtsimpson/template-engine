@@ -6,23 +6,28 @@ const fs = require("fs");
 class employeeRepositry {
 
     constructor() {
-        console.log("in employeeRepo constructor")
-        this.employees = [];
-        console.log("set employees to blank array")
-        if (fs.existsSync("./employees.json")) {
-            this.employees = employeeRepositry.retrieveEmployees();
-        }
+        this.employees = this.retrieveEmployees();
     }
 
     retrieveEmployees() {
-        console.log("in retrieve employees")
         //this to get the employees from file or eventually db
-        return JSON.parse(io.readFromFile("./employees.json"));
+        // console.log("in retrieve employees")
+        try {
+            if (fs.existsSync("./employees.json")) {
+                let fileContents = io.readFromFile("./employees.json");
+                let json = JSON.parse(fileContents);
+                return json;
+            }            
+        } catch (error) {
+            return [];
+        }
+
     }
 
     storeEmployees(){
+        // console.log("in storeEmployees")
         //this is to store employees to file or eventually to db
-        io.writeToFile("./employees.json",JSON.stringify(this.employees))
+        io.writeToFile("./employees.json",JSON.stringify(this.employees,undefined,2))
     }
 
     getEmployees(){
@@ -31,13 +36,13 @@ class employeeRepositry {
     }
 
     addEmployee(employee){
-        console.log("in addEmployee");
+        // console.log("in addEmployee");
         //this is to add another employee to the repo
         this.employees.push(employee);
     }
 
     retrieveEmployeesOfType(type) {
-        return this.employees.map(employee => typeof(employee === type));
+        return this.employees.map(employee => employee.type === type);
     }
 
 }

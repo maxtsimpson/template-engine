@@ -1,6 +1,6 @@
 // TODO: Write code to define and export the Employee class
 class Employee {
-    constructor (name,id,email) {
+    constructor (name,id,email,type = this.constructor.name) {
         if(this.isValidType("name",name,"string")){
             this.name = name;
         }
@@ -10,6 +10,9 @@ class Employee {
         }
         if(this.isValidType("email",email,"string")){
             this.email = email;
+        }
+        if(this.isValidType("type",type,"string")){
+            this.type = type;
         }
     }
 
