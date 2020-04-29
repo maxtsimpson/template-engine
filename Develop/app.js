@@ -15,8 +15,6 @@ const { v1: uuidv1 } = require('uuid');
 const OUTPUT_DIR = path.resolve(__dirname, "output")
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const prompts = new Rx.Subject();
-
 const render = require("./lib/htmlRenderer");
 let propertiesToSet = [];
 
@@ -26,24 +24,23 @@ let propertiesToSet = [];
 // and to create objects for each team member (using the correct classes as blueprints!)
 let main = function () {
 
+    const prompts = new Rx.Subject();
     console.log(banner)
 
     let repo = new employeeRepo();
-    let promptClass = new promptFunctions();
-    promptClass.employeeRepo = repo;
+    let promptClass = new promptFunctions(repo,prompts);
+    // promptClass.employeeRepo = repo;
 
     let errorCallback = error => { throw "an error has occured. please start the program again" };
     let completeCallback = complete => { console.log("questions complete") }
 
     let mainMenuHandler = answer => {
-        console.log({ answer });
         let context = (answer.name.split("-")[0])
         if (answer.answer.toLowerCase() === "exit") {
             prompts.complete();
         } else {
             switch (context) {
                 case "mainMenu":
-                    console.log("is the main menu prompt")
                     switch (answer.answer) {
                         case "1":
                             promptClass.addEmployee(answer);
@@ -51,26 +48,26 @@ let main = function () {
                             break;
                         case "2":
                             promptClass.listCurrentEmployees();
+                            let prompt = (promptClass.makePrompt(menuObject.mainMenu.msg,"mainMenu"))
+                            prompts.next(prompt);
                             break;
                         case "3":
-                            renderToHtml();
+                            renderToHtml(repo);
                             break;
                         default:
                             promptClass.invalidOption();
                             break;
                     }
                     break;
-                case "employeeList":
+                case "editEmployee":
                     promptClass.editEmployee();
-
                     break;
                 case "addEmployeeInitial":
                 case "addEmployee":
-                    promptClass.addEmployee(answer,prompts);
+                    promptClass.addEmployee(answer);
                     break;
                 default:
-                    invalidOption();
-                    prompts.next(makePrompt(menuObject.mainMenu,"mainMenu"));
+                    promptClass.invalidOption();
                     break;
             }
         }
@@ -107,8 +104,10 @@ let main = function () {
     // for the provided `render` function to work!```
 }
 
-const renderToHtml = function () {
+const renderToHtml = function (repo) {
+    console.log("attempting to render")
     renderedHTML = render(repo.getEmployees());
+    console.log({renderedHTML})
     io.writeToFile("./output.html", renderedHTML);
 }
 
